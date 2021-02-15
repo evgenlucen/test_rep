@@ -1,0 +1,19 @@
+{
+  "name": "evgenlucen/salebot-unofficial-sdk",
+  "description": "PHP SDK for Salebot.pro",
+  "type": "library",
+  "keywords": [
+    "salebot"
+  ],
+  "homepage": "https://docs.salebot.pro/api-v-konstruktore-salebot.pro/api-konstruktora",
+  "require": {
+    "guzzlehttp/guzzle": "7.0.1",
+    "ext-json": "*"
+  },
+  "autoload": {
+    "psr-4": {
+      "Salebot\\": "src/Salebot/",
+      "Helpers\\" : "src/Helpers/"
+    }
+  }
+}

@@ -1,0 +1,7 @@
+/vendor
+.idea
+/composer.lock
+/controllers
+/test
+/src/YandexMetrika
+/src/Facebook

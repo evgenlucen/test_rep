@@ -5,7 +5,6 @@
       <sourceFolder url="file://$MODULE_DIR$/src/Salebot" isTestSource="false" packagePrefix="Salebot\" />
       <sourceFolder url="file://$MODULE_DIR$/spec" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/tests" isTestSource="true" />
-      <sourceFolder url="file://$MODULE_DIR$/src/Salebot/Client" isTestSource="false" packagePrefix="Salebot\Client\" />
       <sourceFolder url="file://$MODULE_DIR$/src/Helpers" isTestSource="false" packagePrefix="Helpers\" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/composer" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/guzzlehttp/guzzle" />
