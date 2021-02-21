@@ -7,6 +7,7 @@ namespace Salebot;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
+use Psr\Http\Message\ResponseInterface;
 
 /**
  * Class Salebot
@@ -16,7 +17,7 @@ class Salebot
 {
 
 
-    const URL = 'https://chatter.salebot.pro/api/';
+    private $url = 'https://chatter.salebot.pro/api/';
     const REQUEST_TIMEOUT_SECONDS = 20;
 
     /**
@@ -43,31 +44,70 @@ class Salebot
     }
 
     private function setClient(){
-        $this->client = new Client([
-            'base_uri' => self::URL . $this->token,
+
+        $uri = $this->url . $this->token;
+
+        $client = new Client([
+            'base_uri' => $uri,
             'timeout'=> self::REQUEST_TIMEOUT_SECONDS
         ]);
+        $this->client = $client;
+        return $this;
     }
 
-    /**
-     * @param $client_id int|string
-     * @param $message string
-     * @return \Psr\Http\Message\ResponseInterface|string
-     */
-    public function callback($client_id,$message){
+    public function test(){
+        $params = [
+            'form_params' => [
+                'client_id'=> '7288687',
+                'message'=> '123123'
+            ]
+        ];
+        try {
+            return $this->client->post($this->url . $this->token.'/callback', $params);
+        } catch (GuzzleException $e) {
+            return $e;
+        }
+    }
+
+    public function test2(){
 
         $params = [
-            'client_id'=> (string) $client_id,
-            'message'=> (string) $message
+                'client_id'=> '7288687',
+                'message'=> '123123'
+        ];
+
+
+        try {
+            $response = $this->client->post($this->token.'/callback', [
+                'debug' => TRUE,
+                'form_params' => $params,
+                'headers' => [
+                    'Content-Type' => 'application/x-www-form-urlencoded',
+                ]
+            ]);
+        } catch (GuzzleException $e) {
+            return $e;
+        }
+        return $response;
+
+    }
+
+
+    public function callback($client_id,$message){
+
+
+        $params = [
+            'form_params' => [
+                'client_id'=> (string) $client_id,
+                'message'=> (string) $message
+            ]
         ];
 
         try {
-            $response = $this->client->post('callback', $params);
+            return $this->client->post($this->token.'/callback', $params);
         } catch (GuzzleException $e) {
-            return $e->getMessage();
+            return $e;
         }
-
-        return $response;
     }
 
     /**
@@ -77,7 +117,7 @@ class Salebot
      * @param $vk_id int|string
      * @param $group_id int|string
      * @param $message string|int
-     * @return \Psr\Http\Message\ResponseInterface|string
+     * @return ResponseInterface|string
      */
     public function vk_callback($vk_id,$group_id,$message = ''){
 
@@ -90,7 +130,7 @@ class Salebot
         }
 
         try {
-            $response = $this->client->post('vk_callback', $params);
+            $response = $this->client->post($this->token.'/vk_callback', $params);
         } catch (GuzzleException $e) {
             return $e->getMessage();
         }
@@ -106,7 +146,7 @@ class Salebot
      * @param string $name
      * @param string $message
      * @param string $bot_id
-     * @return \Psr\Http\Message\ResponseInterface|string
+     * @return ResponseInterface|string
      */
     public function whatsapp_callback($phone,$name = '',$message = '',$bot_id = ''){
 
@@ -119,7 +159,7 @@ class Salebot
         if(!empty($bot_id)) { $params['bot_id'] = (string)$bot_id; }
 
         try {
-            $response = $this->client->post('whatsapp_callback', $params);
+            $response = $this->client->post($this->token.'/whatsapp_callback', $params);
         } catch (GuzzleException $e) {
             return $e->getMessage();
         }
@@ -135,7 +175,7 @@ class Salebot
      * @param string $attachment_type Тип отображения фала
      * @param string $attachment_url url файла
      * @param array $buttons
-     * @return \Psr\Http\Message\ResponseInterface|string
+     * @return ResponseInterface|string
      */
     public function message($client_id,$message = '',$attachment_type = '',$attachment_url = '',$buttons = []){
 
@@ -151,7 +191,7 @@ class Salebot
         if(!empty($buttons)) { $params['buttons'] = json_encode($buttons); }
 
         try {
-            $response = $this->client->post('message', $params);
+            $response = $this->client->post($this->token.'/message', $params);
         } catch (GuzzleException $e) {
             return $e->getMessage();
         }
@@ -169,7 +209,7 @@ class Salebot
      * @param string $attachment_url
      * @param array $buttons
      * @param string $shift
-     * @return \Psr\Http\Message\ResponseInterface|string
+     * @return ResponseInterface|string
      */
     public function broadcast($client_id= '',$message = '',$attachment_type = '',$attachment_url = '',$buttons = [],$shift = ''){
 
@@ -183,7 +223,7 @@ class Salebot
         if(!empty($shift)) { $params['shift'] = (string)$shift; }
 
         try {
-            $response = $this->client->post('broadcast', $params);
+            $response = $this->client->post($this->token.'/broadcast', $params);
         } catch (GuzzleException $e) {
             return $e->getMessage();
         }
@@ -200,7 +240,7 @@ class Salebot
      * @param string $attachment_type
      * @param string $attachment_url
      * @param string $whatsapp_bot_id
-     * @return \Psr\Http\Message\ResponseInterface|string
+     * @return ResponseInterface|string
      */
     public function whatsapp_message($phone,$message = '',$attachment_type = '',$attachment_url = '',$whatsapp_bot_id = ''){
 
@@ -216,7 +256,7 @@ class Salebot
         if(!empty($whatsapp_bot_id)) { $params['whatsapp_bot_id'] = (string)$whatsapp_bot_id; }
 
         try {
-            $response = $this->client->post('whatsapp_message', $params);
+            $response = $this->client->post($this->token.'/whatsapp_message', $params);
         } catch (GuzzleException $e) {
             return $e->getMessage();
         }
@@ -232,7 +272,7 @@ class Salebot
      * @param $variables array
      * @param string $client_id
      * @param array $clients
-     * @return \Psr\Http\Message\ResponseInterface|string
+     * @return ResponseInterface|string
      */
     public function save_variables($variables,$client_id = '',$clients = []){
 
@@ -247,7 +287,7 @@ class Salebot
 
 
         try {
-            $response = $this->client->post('save_variables', $params);
+            $response = $this->client->post($this->token.'/save_variables', $params);
         } catch (GuzzleException $e) {
             return $e->getMessage();
         }
@@ -268,12 +308,12 @@ class Salebot
         ];
 
         try {
-            $response = $this->client->get("{$this->token}/get_variables", $params);
+            $response = $this->client->get($this->token.'/get_variables', $params);
         } catch (GuzzleException $e) {
             return $e->getMessage();
         }
 
-        return $response;
+        return $response->getReasonPhrase();
 
     }
 
@@ -281,7 +321,7 @@ class Salebot
     /**
      * @param string $offset
      * @param string $limit
-     * @return \Psr\Http\Message\ResponseInterface|string
+     * @return ResponseInterface|string
      */
     public function get_clients($offset='',$limit=''){
 
